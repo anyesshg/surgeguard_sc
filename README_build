@@ -1,0 +1,12 @@
+This is the repository for SurgeGuard along with the benchmarks used for our experiments. Building the benchmarks and running SurgeGuard requires the following steps:
+
+**1. Building and deploying the benchmarks**
+
+
+**2. Setting the initial allocations**
+
+
+**3. Setting the config files**
+
+
+**4. Running the experiment**
