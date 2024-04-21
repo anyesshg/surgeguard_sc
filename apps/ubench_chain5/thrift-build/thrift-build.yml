@@ -1,0 +1,13 @@
+version: "2"
+services:
+  client:
+    image: local/thrift-build:v1
+    command: bash build.sh
+    container_name: client
+    #    ports:
+    #      - 10000:9090
+    volumes:
+      - ./gen-lua:/thrift-build/gen-lua
+      - ./gen-py:/thrift-build/gen-py
+      - ./gen-cpp:/thrift-build/gen-cpp
+

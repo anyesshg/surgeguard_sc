@@ -1,0 +1,22 @@
+Build instructions:
+- Thrift benchmarks:
+  The thrift benchmarks (everything other than hotelReservation) have a more complex build process. We give the steps for ubench_chain5, the rest also follow a similar process.
+  1. Build the thrift deps
+	- cd ubench_chain5
+	- cd docker/thrift-microservice-deps/cpp
+	- docker build -t local/thrift:v1 .
+  2. Build the openresty for the nginx frontend
+	- cd ../../openresty-thrift
+	- docker build -t local/openresty:v1 .
+  3. Build the application (change the docker image tag for each application)
+	- cd ../..
+	- docker build -t local/chain:v1 .
+
+- gRPC benchmarks:
+  The build process for gRPC benchmarks is much simpler. We just build the application directly (change the image tag for each application).
+	- docker build -t local/hotel:v1 .
+
+
+Using wrk2 with the applications:
+- Lua scripts for the wrk2 workload generator are present in exp_wrk2_scripts inside each app folder. The desired script must be specified using the -s option with wrk2. For example, for ubench_chain5, the wrk command (when run in surgeguard_sc) looks like:
+./wrk2_spike -t 16 -c 256 -R <> -s ./apps/ubench_chain5/exp_wrk2_scripts/ping.lua http://localhost:8080

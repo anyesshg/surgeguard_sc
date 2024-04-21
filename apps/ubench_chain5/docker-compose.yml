@@ -1,0 +1,109 @@
+version: "3.3"
+# If you specify network, then attach this network to the services as shown, otherwise comment out.
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.24.0.0/16
+
+services:
+  ping-service-0:
+    image: local/chain:v1
+    hostname: ping-service-0
+    container_name: ping-service-0
+    restart: always
+    entrypoint: Ping0Service
+    networks:
+      - mynetwork
+    volumes:
+      - ./config:/bpf-microservices/config
+      - /home/cc/paper_setup/shared:/bpf-microservices/shared
+  
+  ping-service-1:
+    image: local/chain:v1
+    hostname: ping-service-1
+    container_name: ping-service-1
+    restart: always
+    logging:
+      driver: none
+    entrypoint: Ping1Service
+    networks:
+      - mynetwork
+    volumes:
+      - ./config:/bpf-microservices/config
+      - /home/cc/paper_setup/shared:/bpf-microservices/shared
+  
+  ping-service-2:
+    image: local/chain:v1
+    hostname: ping-service-2
+    container_name: ping-service-2
+    restart: always
+    logging:
+      driver: none
+    entrypoint: Ping2Service
+    networks:
+      - mynetwork
+    volumes:
+      - ./config:/bpf-microservices/config
+      - /home/cc/paper_setup/shared:/bpf-microservices/shared
+  
+  ping-service-3:
+    image: local/chain:v1
+    hostname: ping-service-3
+    container_name: ping-service-3
+    restart: always
+    entrypoint: Ping3Service
+    networks:
+      - mynetwork
+    volumes:
+      - ./config:/bpf-microservices/config
+      - /home/cc/paper_setup/shared:/bpf-microservices/shared
+  
+  ping-service-4:
+    image: local/chain:v1
+    hostname: ping-service-4
+    container_name: ping-service-4
+    restart: always
+    logging:
+      driver: none
+    entrypoint: Ping4Service
+    networks:
+      - mynetwork
+    volumes:
+      - ./config:/bpf-microservices/config
+      - /home/cc/paper_setup/shared:/bpf-microservices/shared
+  
+  ping-service-5:
+    image: local/chain:v1
+    hostname: ping-service-5
+    container_name: ping-service-5
+    restart: always
+    logging:
+      driver: none
+    entrypoint: Ping5Service
+    networks:
+      - mynetwork
+    volumes:
+      - ./config:/bpf-microservices/config
+      - /home/cc/paper_setup/shared:/bpf-microservices/shared
+  
+  nginx-thrift:
+    image: local/openresty:v1
+    hostname: nginx-thrift
+    container_name: nginx-thrift
+    #logging:
+    #  driver: none
+    ports:
+      - 8080:8080
+    restart: always
+    networks:
+      - mynetwork
+    volumes:
+      - ./nginx-web-server/lua-scripts:/usr/local/openresty/nginx/lua-scripts
+      - ./nginx-web-server/pages:/usr/local/openresty/nginx/pages
+      - ./nginx-web-server/conf/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./nginx-web-server/jaeger-config.json:/usr/local/openresty/nginx/jaeger-config.json
+      - ./gen-lua:/gen-lua
+      - ./docker/openresty-thrift/lua-thrift:/usr/local/openresty/lualib/thrift

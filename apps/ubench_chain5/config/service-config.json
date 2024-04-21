@@ -1,0 +1,47 @@
+{
+  "ping-service-0": {
+    "keepalive_ms": 10000,
+    "addr": "ping-service-0",
+    "timeout_ms": 100000,
+    "port": 5000,
+    "connections": 128
+  },
+  "ping-service-1": {
+    "keepalive_ms": 10000,
+    "addr": "ping-service-1",
+    "timeout_ms": 100000,
+    "port": 5000,
+    "connections": 128
+  },
+  "ping-service-2": {
+    "keepalive_ms": 10000,
+    "addr": "ping-service-2",
+    "timeout_ms": 100000,
+    "port": 5000,
+    "connections": 128
+  },
+  "ping-service-3": {
+    "keepalive_ms": 10000,
+    "addr": "ping-service-3",
+    "timeout_ms": 100000,
+    "port": 5000,
+    "connections": 128
+  },
+  "ping-service-4": {
+    "keepalive_ms": 10000,
+    "addr": "ping-service-4",
+    "timeout_ms": 100000,
+    "port": 5000,
+    "connections": 128
+  },
+  "ping-service-5": {
+    "keepalive_ms": 10000,
+    "addr": "ping-service-5",
+    "timeout_ms": 100000,
+    "port": 5000,
+    "connections": 128
+  },
+  "ssl": {
+    "enabled": false
+  }
+}
