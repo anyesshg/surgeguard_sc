@@ -133,10 +133,10 @@
   spikes, etc.
 
   ## Features added to support spikes and violation volume.
-  1. Added parameters:
-     -Q (QoS limit): The QoS limit in milliseconds. 
-     -X (spiketime): Deprecated. If we want to only generate one spike during the whole experiment, start time of the spike.
-     -Y (spikelen): Duration of each spike (unit = 0.1s). A spike is injected every 10s.
+  Added parameters:
+     -Q (QoS limit): The QoS limit in milliseconds. \
+     -X (spiketime): Deprecated. If we want to only generate one spike during the whole experiment, start time of the spike. \
+     -Y (spikelen): Duration of each spike (unit = 0.1s). A spike is injected every 10s. \
      -Z (spikerate): Extra request rate during the spike. The net req rate during spike = ((-R) + (-Z))
 
 # README of wrk2
