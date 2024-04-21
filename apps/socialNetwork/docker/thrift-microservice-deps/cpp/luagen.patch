@@ -1,0 +1,29 @@
+--- lua.cc	2022-04-26 18:23:23.174338296 +0000
++++ t_lua_generator.cc	2022-04-26 18:34:44.362359298 +0000
+@@ -95,7 +95,7 @@
+   void generate_process_function(std::ostream& out, t_service* tservice, t_function* tfunction);
+   void generate_service_helpers(ostream& out, t_service* tservice);
+   void generate_function_helpers(ostream& out, t_function* tfunction);
+-
++  void generate_footer(ostream& out, t_service* tfunction);
+   /**
+    * Deserialization (Read)
+    */
+@@ -522,11 +522,16 @@
+   generate_service_interface(f_service_, tservice);
+   generate_service_processor(f_service_, tservice);
+   generate_service_helpers(f_service_, tservice);
+-
++  generate_footer(f_service_, tservice);
+   // Close the file
+   f_service_.close();
+ }
+ 
++void t_lua_generator::generate_footer(ostream& out, t_service* tservice) {
++  f_service_ << "\n";
++  f_service_ << "return " << tservice->get_name() << "Client, " << tservice->get_name() << "Processor";
++}
++
+ void t_lua_generator::generate_service_interface(ostream& out, t_service* tservice) {
+   string classname = tservice->get_name() + "Iface";
+   t_service* extends_s = tservice->get_extends();

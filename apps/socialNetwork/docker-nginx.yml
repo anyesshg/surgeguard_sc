@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+          nginx-thrift:
+            image: local/openresty:v2
+            hostname: nginx-thrift
+            ports:
+              - 8080:8080
+            depends_on:
+              jaeger-agent:
+                condition: service_started
+            restart: always
+            volumes:
+              - ./nginx-web-server/lua-scripts:/usr/local/openresty/nginx/lua-scripts
+              - ./nginx-web-server/pages:/usr/local/openresty/nginx/pages
+              - ./nginx-web-server/conf/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+              - ./nginx-web-server/jaeger-config.json:/usr/local/openresty/nginx/jaeger-config.json
+              - ./gen-lua:/gen-lua
+              - ./docker/openresty-thrift/lua-thrift:/usr/local/openresty/lualib/thrift
+        
+          jaeger-agent:
+            image: jaegertracing/all-in-one:latest
+            ports:
+              #      - 5775:5775/udp
+              #      - 6831:6831/udp
+              #      - 6832:6832/udp
+              #      - 5778:5778
+              - 16686:16686
+              #      - 14268:14268
+              #      - 9411:9411
+            restart: always
+            environment:
+              - COLLECTOR_ZIPKIN_HTTP_PORT=9411
