@@ -1,0 +1,27 @@
+For running experiments, run the workload generator and the controller in parallel:
+./wrk <options> &
+./<chosen controller>
+
+Perform the following steps to run experiments with surgeguard and other controllers:
+1. Fix the initial core allocation
+	- Any allocation will do, but starting off with an allocation that does not require the controllers to make any changes to meet QoS at the base request rate - i.e. without any spikes - is good
+
+2. Set the per-service targets
+	- Can be set in any way
+	- We provide set_service_targets.cpp to do this, it measures the average per-container metrics over time and multiplies them by 2x to set the QoS targets.
+	- The config file needs to be updated with the calculated/set per-container QoS targets. See below for a description of the config file.
+
+3. Compile the controllers and run the experiments as desired
+	- The controllers will report the average core utilization during the experiment
+
+Description of the config file:
+The config file is used both by set_service_targets.cpp and the controllers. Except for the per-container QoS targets, the rest of the fields must be set before running set_service_targets.cpp.
+The structure of the config file is as follows:
+<number of containers> 
+<number of clusters>
+One line per container with the following structure:
+<container_id container_name desiredExecMetric desiredTimeFromStart cluster_id node_id num_cores>
+
+- The reason why we have separate container and cluster IDs is because of the presence of containers that are not active for a given action. For example, if we are evaluating readUserTimeline from socialNetwork, then containers like composePostService are not active. Inactive containers can either not be allocated any specific cores (contention with them doesn't matter), or can be all placed within a single cluster. The first option works fine, and just setting num_clusters to be the same as num_containers and listing the active containers below that works fine.
+- The values of desiredExecMetric and desiredTimeFromStart set the per-service targets
+A sample config file is provided in sample_config
