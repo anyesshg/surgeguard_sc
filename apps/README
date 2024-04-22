@@ -16,6 +16,12 @@ Build instructions:
   The build process for gRPC benchmarks is much simpler. We just build the application directly (change the image tag for each application).
 	- docker build -t local/hotel:v1 .
 
+Deployment instructions:
+- Use docker-compose.yml to deploy the applications. This deploys it on one node
+- docker-compose-swarm.yml does multi-node deployment. You can either let docker compose choose the random placement, or fix the placement of one or multiple containers with node constraints 
+	- Fix replicas of each service to 1, we are not doing horizontal scaling
+- Map the volume where the files for sharing runtime metrics are stored to the container
+	- In the docker-compose.yml files provided, this folder is /home/cc/paper_setup/shared, but change it as needed
 
 Using wrk2 with the applications:
 - Lua scripts for the wrk2 workload generator are present in exp_wrk2_scripts inside each app folder. The desired script must be specified using the -s option with wrk2. For example, for ubench_chain5, the wrk command (when run in surgeguard_sc) looks like:

@@ -1,0 +1,12 @@
+FROM golang:1.17.3
+
+RUN git config --global http.sslverify false
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+
+RUN mkdir -p /usr/local/proto
+COPY ./protogen /usr/local/proto
+ENV PATH="/usr/local/proto/bin:$PATH"
+RUN chmod +x /usr/local/proto/bin/protoc
+WORKDIR /usr/local/proto
+RUN protoc --version

@@ -1,0 +1,9 @@
+version: "2"
+services:
+  client:
+    image: local/grpc-build:v1
+    command: bash build.sh
+    container_name: client
+    volumes:
+      - .:/go/src/github.com/harlow/go-micro-services
+

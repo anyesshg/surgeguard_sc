@@ -1,0 +1,371 @@
+version: "3"
+services:
+  #consul:
+  #  image: consul:latest  #  container_name: consul
+  #  logging:
+  #    driver: none
+  #  ports:
+  #    - "8300:8300"
+  #    - "8400:8400"
+  #    - "8500:8500"
+  #    - "8600:53/udp"
+  #  restart: always
+
+  frontend:
+    environment:
+      - TLS
+    build: .
+    #image: hotel_reserv_frontend_single_node
+    image: local/hotel:v1
+    logging:
+      driver: none
+    entrypoint: frontend
+    container_name: frontend
+    ports:
+      - "5000:5000"
+    #depends_on:
+    #  - consul
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    restart: always
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  profile:
+    environment:
+      - TLS
+    build: .
+    image: local/hotel:v1
+    logging:
+      driver: none
+    #image: hotel_reserv_profile_single_node
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    entrypoint: profile
+    container_name: profile
+    depends_on:
+      - mongodb-profile
+      - memcached-profile
+      #- consul
+    restart: always
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  search:
+    build: .
+    image: local/hotel:v1
+    logging:
+      driver: none
+    #image: hotel_reserv_search_single_node
+    entrypoint: search
+    container_name: search
+    #depends_on:
+    #  - consul
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    environment:
+      - TLS
+      # - GRPC_GO_LOG_VERBOSITY_LEVEL=2
+      # - GRPC_GO_LOG_SEVERITY_LEVEL=info
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  geo:
+    environment:
+      - TLS
+    build: .
+    image: local/hotel:v1
+    logging:
+      driver: none
+    #image: hotel_reserv_geo_single_node
+    entrypoint: geo
+    container_name: geo
+    depends_on:
+      - mongodb-geo
+      #- consul
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  rate:
+    environment:
+      - TLS
+    build: .
+    image: local/hotel:v1
+    logging:
+      driver: none
+    #image: hotel_reserv_rate_single_node
+    entrypoint: rate
+    container_name: rate
+    depends_on:
+      - mongodb-rate
+      - memcached-rate
+      #- consul
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  recommendation:
+    environment:
+      - TLS
+    build: .
+    image: local/hotel:v1
+    logging:
+      driver: none
+    #image: hotel_reserv_recommend_single_node
+    entrypoint: recommendation
+    container_name: recommendation
+    depends_on:
+      - mongodb-recommendation
+      #- consul
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  user:
+    environment:
+      - TLS
+    build: .
+    image: local/hotel:v1
+    logging:
+      driver: none
+    #image: hotel_reserv_user_single_node
+    entrypoint: user
+    container_name: user
+    depends_on:
+      - mongodb-user
+      #- consul
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  reservation:
+    environment:
+      - TLS
+    build: .
+    image: local/hotel:v1
+    logging:
+      driver: none
+    #image: hotel_reserv_rsv_single_node
+    entrypoint: reservation
+    container_name: reservation
+    depends_on:
+      - mongodb-reservation
+      - memcached-reserve
+      #- consul
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  #jaeger:
+  #  image: jaegertracing/all-in-one:latest
+  #  container_name: 'hotel_reserv_jaeger'
+  #  ports:
+  #    - "14269"
+  #    - "5778:5778"
+  #    - "14268:14268"
+  #    - "14267"
+  #    - "16686:16686"
+  #    - "5775:5775/udp"
+  #    - "6831:6831/udp"
+  #    - "6832:6832/udp"
+  #  restart: always
+
+  memcached-rate:
+    image: memcached
+    # hostname: user-memcached
+    container_name: memcached-rate
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+      - MEMCACHED_THREADS=2
+    logging:
+      driver: none
+      options:
+        max-size: 50m
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  memcached-profile:
+    image: memcached
+    # hostname: user-memcached
+    container_name: memcached-profile
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+      - MEMCACHED_THREADS=2
+    logging:
+      driver: none
+      options:
+        max-size: 50m
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  memcached-reserve:
+    image: memcached
+    # hostname: user-memcached
+    container_name: memcached-reserve
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+      - MEMCACHED_THREADS=2
+    logging:
+      driver: none
+      options:
+        max-size: 50m
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+
+  mongodb-geo:
+    image: mongo:4.4.6
+    logging:
+      driver: none
+    container_name: mongodb-geo
+    # hostname: geo-db
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+      - geo:/data/db  
+
+  mongodb-profile:
+    image: mongo:4.4.6
+    logging:
+      driver: none
+    container_name: mongodb-profile
+    hostname: profile-db
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+      - profile:/data/db    
+
+  mongodb-rate:
+    image: mongo:4.4.6
+    logging:
+      driver: none
+    container_name: mongodb-rate
+    hostname: rate-db
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+      - rate:/data/db   
+
+  mongodb-recommendation:
+    image: mongo:4.4.6
+    logging:
+      driver: none
+    hostname: recommendation-db
+    container_name: mongodb-recommendation
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+      - recommendation:/data/db
+    
+  mongodb-reservation:
+    image: mongo:4.4.6
+    logging:
+      driver: none
+    container_name: mongodb-reservation
+    hostname: reservation-db
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+      - reservation:/data/db 
+
+  mongodb-user:
+    image: mongo:4.4.6
+    logging:
+      driver: none
+    container_name: mongodb-user
+    hostname: user-db
+    restart: always
+    deploy:
+     replicas: 1
+     placement:
+      constraints: 
+        - node.labels.type == work
+    volumes:
+      - /home/cc/paper_setup/shared:/stats
+      - user:/data/db
+    
+volumes:
+  geo:
+  profile:
+  rate:
+  recommendation:
+  reservation:
+  user:
