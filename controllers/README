@@ -20,7 +20,7 @@ The structure of the config file is as follows:
 <number of containers> 
 <number of clusters>
 One line per container with the following structure:
-<container_id container_name desiredExecMetric desiredTimeFromStart cluster_id node_id num_cores>
+<container_id node_id container_name desiredExecMetric desiredTimeFromStart cluster_id num_cores>
 
 - The reason why we have separate container and cluster IDs is because of the presence of containers that are not active for a given action. For example, if we are evaluating readUserTimeline from socialNetwork, then containers like composePostService are not active. Inactive containers can either not be allocated any specific cores (contention with them doesn't matter), or can be all placed within a single cluster. The first option works fine, and just setting num_clusters to be the same as num_containers and listing the active containers below that works fine.
 - The values of desiredExecMetric and desiredTimeFromStart set the per-service targets
