@@ -1,12 +1,1 @@
-This is the repository for SurgeGuard along with the benchmarks used for our experiments. Building the benchmarks and running SurgeGuard requires the following steps:
-
-**1. Building and deploying the benchmarks**
-
-
-**2. Setting the initial allocations**
-
-
-**3. Setting the config files**
-
-
-**4. Running the experiment**
+Deprecated and contents split into other files. Look up the READMEs in apps, controllers and wrk2_spike instead
